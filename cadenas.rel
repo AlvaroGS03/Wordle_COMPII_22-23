@@ -1,0 +1,83 @@
+XH2
+H 2 areas 11 global symbols 2 banks 1 modes
+M cadenas
+G 00 00 80 81 82 83 84 85 86 87 88 89 8A 8B 8C 8D 8E 8F
+B _CSEG base 0 size 0 map 0 flags 0
+B _DSEG base 0 size 0 map 0 flags 4 fsfx _DS
+S pantalla DefFF00
+S teclado DefFF02
+S .__.ABS. Def0000
+A _CODE size 60 flags CD80 bank 0
+S id_primera_cifra Def003F
+S id_imprime_primera_cifra Def004F
+S ic_sgte_juego Def002E
+S ic_sgte_contador Def0011
+S contador Def001E
+S ic_sgte Def0002
+S imprime_decimal Def003A
+S imprime_cadena_juego Def002C
+S imprime_cadena_contador Def000E
+S ic_retorno_juego Def0037
+S ic_retorno_contador Def0024
+S imprime_cadena Def0000
+S ic_retorno Def000B
+S id_segunda_cifra Def0058
+A _DATA size 0 flags CCC0 bank 1
+T 00 00
+R 00 00 00 00
+T 00 00 34 02
+R 00 00 00 00
+T 00 02
+R 00 00 00 00
+T 00 02 A6 80 27 05 B7 FF 00 20 F7
+R 00 00 00 00
+T 00 0B
+R 00 00 00 00
+T 00 0B 35 02 39
+R 00 00 00 00
+T 00 0E
+R 00 00 00 00
+T 00 0E 34 02 5F
+R 00 00 00 00
+T 00 11
+R 00 00 00 00
+T 00 11 A6 80 27 0F 81 0A 27 05 B7 FF 00 20 F3
+R 00 00 00 00
+T 00 1E
+R 00 00 00 00
+T 00 1E 5C B7 FF 00 20 ED
+R 00 00 00 00
+T 00 24
+R 00 00 00 00
+T 00 24 C0 01 BD 00 3A 35 02 39
+R 00 00 00 00 01 05 00 00
+T 00 2C
+R 00 00 00 00
+T 00 2C 34 02
+R 00 00 00 00
+T 00 2E
+R 00 00 00 00
+T 00 2E A6 80 27 D9 B7 FF 00 20 CB
+R 00 00 00 00
+T 00 37
+R 00 00 00 00
+T 00 37 35 02 39
+R 00 00 00 00
+T 00 3A
+R 00 00 00 00
+T 00 3A 34 16 8E 00 00
+R 00 00 00 00
+T 00 3F
+R 00 00 00 00
+T 00 3F 10 83 00 0A 25 0A 83 00 0A 1E 10 5C 1E
+R 00 00 00 00
+T 00 4C 10 20 F0
+R 00 00 00 00
+T 00 4F
+R 00 00 00 00
+T 00 4F 1E 10 CB 30 F7 FF 00 1E 10
+R 00 00 00 00
+T 00 58
+R 00 00 00 00
+T 00 58 CB 30 F7 FF 00 35 16 39
+R 00 00 00 00

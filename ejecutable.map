@@ -1,0 +1,146 @@
+ASxxxx Linker V05.00,  page 1.
+Hexidecimal  [16-Bits]
+
+Area                       Addr        Size        Decimal Bytes (Attributes)
+--------------------       ----        ----        ------- ----- ------------
+.  .ABS.                   0000        0000 =           0. bytes (ABS,OVR,CSEG)
+
+         Value  Global                             Global Defined In Module
+         -----  --------------------------------   ------------------------
+          0000  l__DATA                         
+          0000  s__DATA                         
+          0000  s__CODE                         
+          0000  l_FIJA                          
+          0000  s_FIJA                          
+          0000  .__.ABS.                           comprobar
+          08C8  l__CODE                         
+          FF00  pantalla                           comprobar
+          FF01  fin                                wordle
+          FF02  teclado                            comprobar
+
+ASxxxx Linker V05.00,  page 2.
+Hexidecimal  [16-Bits]
+[ Bank == _CSEG ]
+
+Area                       Addr        Size        Decimal Bytes (Attributes)
+--------------------       ----        ----        ------- ----- ------------
+_CODE                      0000        08C8 =        2248. bytes (REL,CON,CSEG)
+
+         Value  Global                             Global Defined In Module
+         -----  --------------------------------   ------------------------
+          0000  titulo                             wordle
+          0244  propiedad                          wordle
+          0304  menu                               wordle
+          0348  clearScreen                        wordle
+          0350  palabra_aleatoria                  wordle
+          0357  vector_tablero                     wordle
+          0376  programapp                         wordle
+          0396  lee_dato                           wordle
+          03AB  diccionario                        wordle
+          03AE  jugar                              wordle
+          03B3  acabar                             wordle
+          03BD  numale                             diccionario
+          03BF  titulo_diccionario                 diccionario
+          03CF  palabras                           diccionario
+          0446  confirmacion                       diccionario
+          046C  pide_numero                        diccionario
+          0482  programapala                       diccionario
+          049E  imprime_cadena                     cadenas
+          04A0  ic_sgte                            cadenas
+          04A9  ic_retorno                         cadenas
+          04AC  imprime_cadena_contador            cadenas
+          04AF  ic_sgte_contador                   cadenas
+          04BC  contador                           cadenas
+          04C2  ic_retorno_contador                cadenas
+          04CA  imprime_cadena_juego               cadenas
+          04CC  ic_sgte_juego                      cadenas
+          04D5  ic_retorno_juego                   cadenas
+          04D8  imprime_decimal                    cadenas
+          04DD  id_primera_cifra                   cadenas
+          04ED  id_imprime_primera_cifra           cadenas
+          04F6  id_segunda_cifra                   cadenas
+          04FE  pos_inicial                        juego
+          04FF  count                              juego
+          0500  count_tablero                      juego
+          0501  cinco                              juego
+          0502  numpal                             juego
+          0503  pos_b                              juego
+          0504  cont                               juego
+          0505  letra                              juego
+          0507  intentos                           juego
+          0508  letra_volver                       juego
+          0509  pide                               juego
+          0545  titulo_juego                       juego
+          0578  mensaje_salir                      juego
+          05BD  numero_palabra                     juego
+          05E1  mensaje_perdido                    juego
+          060B  palabra_a_comprobar                juego
+          0611  juego_principal                    juego
+          0622  elegir_palabra                     juego
+ASxxxx Linker V05.00,  page 3.
+Hexidecimal  [16-Bits]
+[ Bank == _CSEG ]
+
+Area                       Addr        Size        Decimal Bytes (Attributes)
+--------------------       ----        ----        ------- ----- ------------
+_CODE                      0000        08C8 =        2248. bytes (REL,CON,CSEG)
+
+         Value  Global                             Global Defined In Module
+         -----  --------------------------------   ------------------------
+          0636  bucle_contador                     juego
+          0636  contar_palabras                    juego
+          063B  ic_sgte_contador_palabra           juego
+          0643  contador_palabra                   juego
+          064B  cargar_palabra                     juego
+          064C  cargar                             juego
+          065E  final_bucle                        juego
+          0660  juego_ppal                         juego
+          0666  bucle_pide                         juego
+          0668  pide_letra                         juego
+          0690  has_perdido                        juego
+          06A8  pal_cmp                            juego
+          06AF  limpiar_cont                       juego
+          06C3  quitar_letra                       juego
+          0703  fin_bucle                          juego
+          070B  bucle_insertar                     juego
+          0723  bucle_turno                        juego
+          074D  juego_final                        juego
+          0750  interfaz_tablero                   juego
+          0760  empieza_tablero                    juego
+          077B  bucle_seguir                       juego
+          0788  seguir_bucle                       juego
+          07AA  mitad_tablero                      juego
+          07AD  retorno_tablero                    juego
+          07C7  pos_l                              comprobar
+          07C8  pos_l2                             comprobar
+          07C9  l_cmp                              comprobar
+          07CA  contador_verde                     comprobar
+          07CB  blanco                             comprobar
+          07D1  amarillo                           comprobar
+          07D7  verde                              comprobar
+          07DD  mensaje_ganado                     comprobar
+          07EC  mensaje_comprobacion               comprobar
+          0816  comprobar_palabra                  comprobar
+          082D  bucle_x                            comprobar
+          083C  bucle_y                            comprobar
+          0850  pertenece                          comprobar
+          085A  imprime_amarillo                   comprobar
+          0862  imprime_verde                      comprobar
+          0871  has_ganado                         comprobar
+          088F  final_juego                        comprobar
+          08A3  programa_inicio                    comprobar
+          08A6  imprime_letra                      comprobar
+          08C7  final_comprobar                    comprobar
+
+ASxxxx Linker V05.00,  page 4.
+
+Files Linked                              [ module(s) ]
+
+wordle.rel                                [ wordle ]
+diccionario.rel                           [ diccionario ]
+cadenas.rel                               [ cadenas ]
+juego.rel                                 [ juego ]
+comprobar.rel                             [ comprobar ]
+
+
+

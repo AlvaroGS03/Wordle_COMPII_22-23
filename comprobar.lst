@@ -1,0 +1,183 @@
+ASxxxx Assembler V05.00  (Motorola 6809), page 1.
+Hexidecimal [16-Bits]
+
+
+
+                              1     .module comprobar
+                              2 
+                     FF00     3 pantalla    .equ 0XFF00
+                     FF02     4 teclado     .equ 0XFF02
+                              5 
+                              6     .globl pide_letra
+                              7     .globl palabra_aleatoria
+                              8     .globl count
+                              9     .globl count_tablero
+                             10     .globl cinco
+                             11     .globl imprime_cadena
+                             12     .globl pos_inicial
+                             13     .globl vector_tablero
+                             14     .globl titulo_juego
+                             15     .globl palabra_a_comprobar
+                             16     .globl comprobar_palabra
+                             17     .globl confirmacion
+                             18     .globl pos_b
+                             19     .globl programapp
+                             20     .globl final_juego
+                             21 
+   0000 00                   22 pos_l:		.byte   0
+   0001 00                   23 pos_l2:		.byte   0
+   0002 00                   24 l_cmp:		.byte   0
+   0003 00                   25 contador_verde:     .byte 0
+                             26 
+                             27 	
+   0004 1B 5B 33 37 6D 00    28     blanco: .asciz "\33[37m"
+   000A 1B 5B 33 33 6D 00    29     amarillo: .asciz "\33[33m"
+   0010 1B 5B 33 32 6D 00    30     verde: .asciz "\33[32m"
+   0016 0A 48 61 73 20 67    31     mensaje_ganado: .asciz "\nHas ganado!!\n"
+        61 6E 61 64 6F 21
+        21 0A 00
+   0025 0A 43 6F 6D 70 72    32     mensaje_comprobacion: .asciz "\nComprobacion de la palabra introducida: "
+        6F 62 61 63 69 6F
+        6E 20 64 65 20 6C
+        61 20 70 61 6C 61
+        62 72 61 20 69 6E
+        74 72 6F 64 75 63
+        69 64 61 3A 20 00
+                             33     
+                             34 
+   004F                      35 comprobar_palabra:
+   004F 8E 00 25      [ 3]   36     ldx     #mensaje_comprobacion
+   0052 BD 00 00      [ 8]   37     jsr     imprime_cadena
+   0055 5F            [ 2]   38     clrb
+   0056 F7 00 03      [ 5]   39     stb     contador_verde
+   0059 8E 00 00      [ 3]   40     ldx     #palabra_a_comprobar       
+   005C F7 00 00      [ 5]   41     stb     pos_l
+   005F F7 00 01      [ 5]   42     stb     pos_l2
+   0062 10 8E 00 00   [ 4]   43     ldy     #palabra_aleatoria           
+   0066                      44     bucle_x:
+   0066 8E 00 00      [ 3]   45         ldx     #palabra_a_comprobar
+   0069 F6 00 00      [ 5]   46         ldb     pos_l
+   006C A6 85         [ 5]   47         lda     b,x
+ASxxxx Assembler V05.00  (Motorola 6809), page 2.
+Hexidecimal [16-Bits]
+
+
+
+   006E B7 00 02      [ 5]   48         sta     l_cmp
+   0071 5C            [ 2]   49         incb 
+   0072 F7 00 00      [ 5]   50         stb     pos_l
+   0075                      51         bucle_y:
+   0075 F6 00 01      [ 5]   52             ldb     pos_l2
+   0078 A6 A5         [ 5]   53             lda     b,y
+   007A 5C            [ 2]   54             incb 
+   007B F7 00 01      [ 5]   55             stb     pos_l2
+   007E B1 00 02      [ 5]   56             cmpa    l_cmp
+   0081 27 06         [ 3]   57             beq     pertenece
+   0083 C1 05         [ 2]   58             cmpb    #5
+   0085 27 58         [ 3]   59             beq     imprime_letra
+   0087 20 EC         [ 3]   60             bra bucle_y
+                             61 
+   0089                      62     pertenece:
+   0089 F1 00 00      [ 5]   63         cmpb    pos_l
+   008C 27 0D         [ 3]   64         beq     imprime_verde
+   008E F1 00 00      [ 5]   65         cmpb    pos_l
+   0091 26 00         [ 3]   66         bne     imprime_amarillo
+                             67 
+   0093                      68     imprime_amarillo:
+   0093 8E 00 0A      [ 3]   69         ldx     #amarillo
+   0096 BD 00 00      [ 8]   70         jsr     imprime_cadena
+   0099 20 44         [ 3]   71         bra     imprime_letra
+   009B                      72     imprime_verde:
+   009B 8E 00 10      [ 3]   73         ldx     #verde
+   009E BD 00 00      [ 8]   74         jsr     imprime_cadena
+   00A1 F6 00 03      [ 5]   75         ldb     contador_verde
+   00A4 5C            [ 2]   76         incb
+   00A5 F7 00 03      [ 5]   77         stb     contador_verde
+   00A8 20 35         [ 3]   78         bra     imprime_letra
+   00AA                      79     has_ganado:
+   00AA 8E 00 10      [ 3]   80         ldx     #verde
+   00AD BD 00 00      [ 8]   81         jsr     imprime_cadena
+   00B0 8E 00 16      [ 3]   82         ldx     #mensaje_ganado
+   00B3 BD 00 00      [ 8]   83         jsr     imprime_cadena
+   00B6 8E 00 04      [ 3]   84         ldx     #blanco
+   00B9 BD 00 00      [ 8]   85         jsr     imprime_cadena
+   00BC 8E 00 00      [ 3]   86         ldx     #confirmacion
+   00BF BD 00 00      [ 8]   87         jsr     imprime_cadena
+   00C2 B6 FF 02      [ 5]   88         lda		teclado
+   00C5 BD 00 C8      [ 8]   89         jsr		final_juego
+   00C8                      90     final_juego:
+   00C8 F6 00 00      [ 5]   91         ldb     pos_b
+   00CB 8E 00 00      [ 3]   92         ldx     #vector_tablero
+   00CE 86 5F         [ 2]   93         lda     #'_
+   00D0 A7 85         [ 5]   94         sta     b,x
+   00D2 5A            [ 2]   95         decb
+   00D3 F7 00 00      [ 5]   96         stb     pos_b
+   00D6 C1 00         [ 2]   97         cmpb    #0
+   00D8 27 02         [ 3]   98         beq     programa_inicio
+   00DA 20 EC         [ 3]   99         bra     final_juego
+   00DC                     100     programa_inicio:
+   00DC BD 00 00      [ 8]  101         jsr		programapp
+   00DF                     102     imprime_letra:
+ASxxxx Assembler V05.00  (Motorola 6809), page 3.
+Hexidecimal [16-Bits]
+
+
+
+   00DF B6 00 02      [ 5]  103         lda     l_cmp
+   00E2 B7 FF 00      [ 5]  104         sta     pantalla
+   00E5 8E 00 04      [ 3]  105         ldx     #blanco
+   00E8 BD 00 00      [ 8]  106         jsr     imprime_cadena
+   00EB F6 00 03      [ 5]  107         ldb     contador_verde
+   00EE C1 05         [ 2]  108         cmpb    #5
+   00F0 27 B8         [ 3]  109         beq     has_ganado
+   00F2 5F            [ 2]  110         clrb
+   00F3 F7 00 01      [ 5]  111         stb     pos_l2
+   00F6 F6 00 00      [ 5]  112         ldb     pos_l
+   00F9 C1 05         [ 2]  113         cmpb    #5
+   00FB 27 03         [ 3]  114         beq     final_comprobar
+                            115 
+   00FD 16 FF 66      [ 5]  116         lbra     bucle_x
+                            117 
+   0100                     118     final_comprobar:
+   0100 39            [ 5]  119         rts
+                            120 
+                            121 
+                            122 
+                            123     
+                            124 
+ASxxxx Assembler V05.00  (Motorola 6809), page 4.
+Hexidecimal [16-Bits]
+
+Symbol Table
+
+    .__.$$$.       =   2710 L   |     .__.ABS.       =   0000 G
+    .__.CPU.       =   0000 L   |     .__.H$L.       =   0001 L
+  0 amarillo           000A GR  |   0 blanco             0004 GR
+  0 bucle_x            0066 GR  |   0 bucle_y            0075 GR
+    cinco              **** GX  |   0 comprobar_pala     004F GR
+    confirmacion       **** GX  |   0 contador_verde     0003 GR
+    count              **** GX  |     count_tablero      **** GX
+  0 final_comproba     0100 GR  |   0 final_juego        00C8 GR
+  0 has_ganado         00AA GR  |   0 imprime_amaril     0093 GR
+    imprime_cadena     **** GX  |   0 imprime_letra      00DF GR
+  0 imprime_verde      009B GR  |   0 l_cmp              0002 GR
+  0 mensaje_compro     0025 GR  |   0 mensaje_ganado     0016 GR
+    palabra_a_comp     **** GX  |     palabra_aleato     **** GX
+    pantalla       =   FF00 G   |   0 pertenece          0089 GR
+    pide_letra         **** GX  |     pos_b              **** GX
+    pos_inicial        **** GX  |   0 pos_l              0000 GR
+  0 pos_l2             0001 GR  |   0 programa_inici     00DC GR
+    programapp         **** GX  |     teclado        =   FF02 G
+    titulo_juego       **** GX  |     vector_tablero     **** GX
+  0 verde              0010 GR
+
+ASxxxx Assembler V05.00  (Motorola 6809), page 5.
+Hexidecimal [16-Bits]
+
+Area Table
+
+[_CSEG]
+   0 _CODE            size  101   flags C180
+[_DSEG]
+   1 _DATA            size    0   flags C0C0
+

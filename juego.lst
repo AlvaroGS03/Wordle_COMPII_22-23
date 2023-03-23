@@ -1,0 +1,412 @@
+ASxxxx Assembler V05.00  (Motorola 6809), page 1.
+Hexidecimal [16-Bits]
+
+
+
+                              1     .module juego
+                              2 
+                     FF00     3 pantalla    .equ 0XFF00
+                     FF02     4 teclado     .equ 0XFF02
+                              5 
+                              6     .globl juego_principal
+                              7     .globl imprime_cadena
+                              8     .globl imprime_cadena_juego
+                              9     .globl imprime_decimal
+                             10     .globl vector_tablero
+                             11     .globl palabras
+                             12     .globl programapp
+                             13     .globl palabra_aleatoria
+                             14     .globl pide_letra
+                             15     .globl titulo_juego
+                             16     .globl palabra_a_comprobar
+                             17     .globl comprobar_palabra
+                             18     .globl pos_b
+                             19     .globl cont
+                             20     .globl final_juego
+                             21     .globl confirmacion
+                             22 
+                             23 
+   0000 00                   24 pos_inicial:	.byte	0
+   0001 00                   25 count:		.byte	0		
+   0002 00                   26 count_tablero:	.byte	0		
+   0003 00                   27 cinco:		.byte   0		
+   0004 00                   28 numpal:		.byte   0
+   0005 00                   29 pos_b:		.byte   0
+   0006 00                   30 cont:   .byte 0
+   0007 00 00                31 letra: .word 0
+   0009 30                   32 intentos: .byte 48
+   000A 00                   33 letra_volver: .byte 0
+                             34 
+                             35 
+   000B 0A 49 6E 74 72 6F    36 pide: .asciz "\nIntroduzca letra mayuscula (Presione espacio para borrar):"
+        64 75 7A 63 61 20
+        6C 65 74 72 61 20
+        6D 61 79 75 73 63
+        75 6C 61 20 28 50
+        72 65 73 69 6F 6E
+        65 20 65 73 70 61
+        63 69 6F 20 70 61
+        72 61 20 62 6F 72
+        72 61 72 29 3A 00
+   0047 0A 0A 20 20 7C 20    37 titulo_juego:   .ascii "\n\n  | JUEGO |\n"
+        4A 55 45 47 4F 20
+        7C 0A
+   0055 2D 2D 2D 2D 2D 2D    38                 .ascii "-----------\n"
+        2D 2D 2D 2D 2D 0A
+   0061 20 20 7C 20 31 32    39                 .ascii "  | 12345 |\n"
+        33 34 35 20 7C 0A
+   006D 2D 2D 2D 2D 2D 2D    40                 .asciz "-----------\n"
+        2D 2D 2D 2D 2D 0A
+        00
+ASxxxx Assembler V05.00  (Motorola 6809), page 2.
+Hexidecimal [16-Bits]
+
+
+
+   007A 50 75 6C 73 61 72    41 mensaje_salir: 		.asciz	"Pulsar V para volver al menu, R para reiniciar, otro para continuar\n"
+        20 56 20 70 61 72
+        61 20 76 6F 6C 76
+        65 72 20 61 6C 20
+        6D 65 6E 75 2C 20
+        52 20 70 61 72 61
+        20 72 65 69 6E 69
+        63 69 61 72 2C 20
+        6F 74 72 6F 20 70
+        61 72 61 20 63 6F
+        6E 74 69 6E 75 61
+        72 0A 00
+   00BF 0A 49 6E 74 72 6F    42 numero_palabra:		.asciz "\nIntroduce un numero (entre 0 y 9):"
+        64 75 63 65 20 75
+        6E 20 6E 75 6D 65
+        72 6F 20 28 65 6E
+        74 72 65 20 30 20
+        79 20 39 29 3A 00
+   00E3 0A 1B 5B 33 31 6D    43 mensaje_perdido:    .asciz "\n\33[31mHas perdido!!\33[37m\nLa palabra era: "
+        48 61 73 20 70 65
+        72 64 69 64 6F 21
+        21 1B 5B 33 37 6D
+        0A 4C 61 20 70 61
+        6C 61 62 72 61 20
+        65 72 61 3A 20 00
+                             44 
+   010D                      45 palabra_a_comprobar:
+   010D 5F 5F 5F 5F 5F 00    46         .asciz "_____"
+                             47 
+   0113                      48 juego_principal:
+   0113 10 CE F0 00   [ 4]   49     lds     #0XF000
+   0117 C6 00         [ 2]   50     ldb #0
+   0119 4F            [ 2]   51     clra
+   011A B6 00 0A      [ 5]   52     lda     letra_volver
+   011D F7 00 0A      [ 5]   53     stb     letra_volver
+   0120 81 01         [ 2]   54     cmpa    #1
+   0122 27 3E         [ 3]   55     beq     juego_ppal
+   0124                      56     elegir_palabra:
+   0124 8E 00 BF      [ 3]   57         ldx     #numero_palabra
+   0127 BD 00 00      [ 8]   58         jsr     imprime_cadena
+   012A B6 FF 02      [ 5]   59         lda     teclado
+   012D 81 30         [ 2]   60         cmpa    #'0
+   012F 25 F3         [ 3]   61         blo     elegir_palabra
+   0131 81 39         [ 2]   62         cmpa    #'9
+   0133 22 EF         [ 3]   63         bhi     elegir_palabra
+   0135 B7 00 04      [ 5]   64         sta     numpal
+                             65 
+                             66         
+   0138                      67     contar_palabras:
+   0138                      68         bucle_contador:
+   0138 C6 30         [ 2]   69             ldb #48
+                             70                   
+   013A 8E 00 00      [ 3]   71             ldx     #palabras 
+                             72 
+   013D                      73             ic_sgte_contador_palabra:
+ASxxxx Assembler V05.00  (Motorola 6809), page 3.
+Hexidecimal [16-Bits]
+
+
+
+   013D A6 80         [ 6]   74                 lda     ,x+
+   013F 81 0A         [ 2]   75                 cmpa    #'\n
+   0141 27 02         [ 3]   76                 beq     contador_palabra   
+   0143 20 F8         [ 3]   77                 bra     ic_sgte_contador_palabra
+   0145                      78             contador_palabra:
+   0145 5C            [ 2]   79                 incb
+   0146 F1 00 04      [ 5]   80                 cmpb    numpal
+   0149 27 02         [ 3]   81                 beq     cargar_palabra
+   014B 20 F0         [ 3]   82                 bra     ic_sgte_contador_palabra
+   014D                      83             cargar_palabra:
+   014D 5F            [ 2]   84                 clrb
+   014E                      85                 cargar:    
+   014E A6 80         [ 6]   86                     lda     ,x+
+   0150 34 10         [ 6]   87                     pshs    x
+   0152 8E 00 00      [ 3]   88                     ldx     #palabra_aleatoria
+   0155 A7 85         [ 5]   89                     sta     b,x
+   0157 35 10         [ 6]   90                     puls    x
+   0159 5C            [ 2]   91                     incb
+   015A 81 0A         [ 2]   92                     cmpa    #'\n
+   015C 27 02         [ 3]   93                     beq     final_bucle
+   015E 20 EE         [ 3]   94                     bra     cargar
+                             95                 
+   0160                      96             final_bucle:
+   0160 20 00         [ 3]   97                 bra juego_ppal
+                             98 
+   0162                      99 juego_ppal:
+   0162 10 CE F0 00   [ 4]  100     lds     #0XF000
+   0166 5F            [ 2]  101     clrb
+   0167 4F            [ 2]  102     clra
+   0168                     103     bucle_pide:
+   0168 20 00         [ 3]  104         bra     pide_letra
+                            105 
+   016A                     106     pide_letra:  
+   016A F6 00 05      [ 5]  107         ldb     pos_b
+   016D C1 19         [ 2]  108         cmpb    #25
+   016F 27 21         [ 3]  109         beq     has_perdido      
+   0171 8E 00 0B      [ 3]  110         ldx     #pide
+   0174 BD 00 00      [ 8]  111         jsr     imprime_cadena
+   0177 B6 FF 02      [ 5]  112         lda     teclado
+   017A B7 00 07      [ 5]  113         sta     letra
+   017D 81 20         [ 2]  114         cmpa    #' 
+   017F 27 44         [ 3]  115         beq     quitar_letra
+   0181 F6 00 06      [ 5]  116         ldb cont
+   0184 8E 01 0D      [ 3]  117         ldx #palabra_a_comprobar
+   0187 A7 85         [ 5]  118         sta b,x  
+   0189 5C            [ 2]  119         incb
+   018A F7 00 06      [ 5]  120         stb cont
+                            121         
+                            122         
+   018D 16 00 7D      [ 5]  123         lbra     bucle_insertar
+   0190 20 D6         [ 3]  124         bra     bucle_pide
+   0192                     125     has_perdido:
+   0192 8E 00 E3      [ 3]  126         ldx     #mensaje_perdido
+   0195 BD 00 00      [ 8]  127         jsr     imprime_cadena
+   0198 8E 00 00      [ 3]  128         ldx     #palabra_aleatoria
+ASxxxx Assembler V05.00  (Motorola 6809), page 4.
+Hexidecimal [16-Bits]
+
+
+
+   019B BD 00 00      [ 8]  129         jsr     imprime_cadena
+   019E 8E 00 00      [ 3]  130         ldx     #confirmacion
+   01A1 BD 00 00      [ 8]  131         jsr     imprime_cadena
+   01A4 B6 FF 02      [ 5]  132         lda		teclado
+   01A7 BD 00 00      [ 8]  133         jsr		final_juego
+   01AA                     134     pal_cmp:
+   01AA BD 00 00      [ 8]  135         jsr comprobar_palabra
+   01AD 20 02         [ 3]  136         bra limpiar_cont
+   01AF 20 B7         [ 3]  137         bra bucle_pide
+                            138 
+   01B1                     139     limpiar_cont:
+   01B1 8E 01 0D      [ 3]  140         ldx #palabra_a_comprobar
+   01B4 F6 00 06      [ 5]  141         ldb cont
+   01B7 5A            [ 2]  142         decb 
+   01B8 86 5F         [ 2]  143         lda #'_
+   01BA A7 85         [ 5]  144         sta b,x
+   01BC F7 00 06      [ 5]  145         stb cont
+   01BF C1 00         [ 2]  146         cmpb #0
+   01C1 22 EE         [ 3]  147         bhi limpiar_cont
+   01C3 20 A5         [ 3]  148         bra pide_letra
+   01C5                     149     quitar_letra:
+                            150 
+   01C5 F6 00 05      [ 5]  151         ldb pos_b
+   01C8 C1 00         [ 2]  152         cmpb    #0
+   01CA 27 9C         [ 3]  153         beq     bucle_pide
+   01CC C1 05         [ 2]  154         cmpb    #5
+   01CE 27 98         [ 3]  155         beq     bucle_pide
+   01D0 C1 0A         [ 2]  156         cmpb    #10
+   01D2 27 94         [ 3]  157         beq     bucle_pide
+   01D4 C1 0F         [ 2]  158         cmpb    #15
+   01D6 27 90         [ 3]  159         beq     bucle_pide
+   01D8 C1 14         [ 2]  160         cmpb    #20
+   01DA 27 8C         [ 3]  161         beq     bucle_pide
+   01DC 5A            [ 2]  162         decb
+   01DD 86 5F         [ 2]  163         lda     #'_
+   01DF 8E 00 00      [ 3]  164         ldx     #vector_tablero
+   01E2 A7 85         [ 5]  165         sta     b,x
+   01E4 F7 00 05      [ 5]  166         stb     pos_b
+   01E7 8E 01 0D      [ 3]  167         ldx     #palabra_a_comprobar
+   01EA F6 00 06      [ 5]  168         ldb     cont
+   01ED 5A            [ 2]  169         decb
+   01EE A7 85         [ 5]  170         sta     b,x
+   01F0 F7 00 06      [ 5]  171         stb     cont
+   01F3 F6 00 05      [ 5]  172         ldb     pos_b
+   01F6 8E 00 47      [ 3]  173         ldx     #titulo_juego
+   01F9 BD 00 00      [ 8]  174         jsr     imprime_cadena
+   01FC BD 02 52      [ 8]  175         jsr     interfaz_tablero
+   01FF 16 00 23      [ 5]  176         lbra     bucle_turno
+   0202 16 FF 63      [ 5]  177         lbra     bucle_pide
+   0205                     178     fin_bucle:
+   0205 86 01         [ 2]  179         lda #1
+   0207 B7 00 0A      [ 5]  180         sta letra_volver
+   020A BD 00 00      [ 8]  181         jsr programapp
+                            182 
+   020D                     183     bucle_insertar:
+ASxxxx Assembler V05.00  (Motorola 6809), page 5.
+Hexidecimal [16-Bits]
+
+
+
+   020D 8E 00 47      [ 3]  184         ldx     #titulo_juego
+   0210 BD 00 00      [ 8]  185         jsr     imprime_cadena
+                            186 
+   0213 B6 00 07      [ 5]  187         lda letra
+                            188 
+   0216 F6 00 05      [ 5]  189         ldb     pos_b
+   0219 8E 00 00      [ 3]  190         ldx #vector_tablero
+   021C A7 85         [ 5]  191         sta b,x
+   021E 5C            [ 2]  192         incb
+   021F F7 00 05      [ 5]  193         stb pos_b
+                            194        
+                            195 
+   0222 BD 02 52      [ 8]  196         jsr     interfaz_tablero
+                            197 
+   0225                     198         bucle_turno: 
+   0225 86 0A         [ 2]  199             lda 	#'\n					
+   0227 B7 FF 00      [ 5]  200             sta 	pantalla
+   022A 8E 00 7A      [ 3]  201             ldx 	#mensaje_salir
+   022D BD 00 00      [ 8]  202             jsr 	imprime_cadena		
+   0230 B6 FF 02      [ 5]  203             lda 	teclado
+   0233 81 76         [ 2]  204             cmpa	#'v
+   0235 10 27 FF CC   [ 6]  205             lbeq 	fin_bucle			;Si se introduce V o v se sale al menu
+   0239 81 56         [ 2]  206             cmpa 	#'V
+   023B 10 27 FF C6   [ 6]  207             lbeq 	fin_bucle
+   023F 81 72         [ 2]  208             cmpa    #'r
+   0241 27 0C         [ 3]  209             beq     juego_final
+   0243 81 52         [ 2]  210             cmpa    #'R
+   0245 27 08         [ 3]  211             beq     juego_final
+                            212 
+   0247 86 0A         [ 2]  213             lda 	#'\n					
+   0249 B7 FF 00      [ 5]  214             sta 	pantalla
+   024C 16 FF 19      [ 5]  215             lbra bucle_pide
+                            216 
+                            217 
+   024F                     218 juego_final:
+   024F BD 00 00      [ 8]  219     jsr     final_juego
+   0252                     220 interfaz_tablero:
+   0252 36 16         [ 8]  221 	pshu	a,x,b	
+                            222 							;Crea el contorno o interfaz grafica del tablero con los guiones
+   0254 F6 00 00      [ 5]  223 	ldb	pos_inicial
+   0257 8E 00 00      [ 3]  224 	ldx	#vector_tablero
+   025A B6 00 03      [ 5]  225 	lda	cinco					
+   025D 8B 05         [ 2]  226 	adda	#5
+   025F B7 00 03      [ 5]  227 	sta	cinco					;Variable inicializada a 6 representando el limite de columnas de cada fila(nCOL-1)
+   0262                     228 empieza_tablero:
+   0262 B6 00 02      [ 5]  229 	lda	count_tablero				;Contador que imprime las 6 filas del tablero original
+   0265 81 05         [ 2]  230 	cmpa	#5
+   0267 27 43         [ 3]  231 	beq	mitad_tablero
+   0269 8B 31         [ 2]  232     adda #'1
+   026B B7 FF 00      [ 5]  233     sta pantalla
+   026E 86 20         [ 2]  234     lda	#' 
+   0270 B7 FF 00      [ 5]  235 	sta	pantalla
+   0273 86 7C         [ 2]  236     lda #'|
+   0275 B7 FF 00      [ 5]  237     sta pantalla
+   0278 86 20         [ 2]  238 	lda	#' 
+ASxxxx Assembler V05.00  (Motorola 6809), page 6.
+Hexidecimal [16-Bits]
+
+
+
+   027A B7 FF 00      [ 5]  239 	sta	pantalla    
+                            240     
+   027D                     241 bucle_seguir:
+   027D A6 85         [ 5]  242 	lda 	b,x					;Imprime lo que hay en las posiciones de la fila
+   027F B7 FF 00      [ 5]  243 	sta	pantalla
+                            244 	
+   0282 5C            [ 2]  245 	incb
+   0283 F1 00 03      [ 5]  246 	cmpb	cinco					;B hasta 6(1ª iteracion),13(2ª iteracion),...
+   0286 27 02         [ 3]  247 	beq	seguir_bucle
+   0288 20 F3         [ 3]  248 	bra	bucle_seguir
+   028A                     249 seguir_bucle:
+   028A 86 20         [ 2]  250 	lda	#' 
+   028C B7 FF 00      [ 5]  251 	sta	pantalla	
+   028F 86 7C         [ 2]  252 	lda	#'|
+   0291 B7 FF 00      [ 5]  253 	sta	pantalla
+   0294 86 0A         [ 2]  254 	lda	#'\n
+   0296 B7 FF 00      [ 5]  255 	sta	pantalla
+                            256 	
+   0299 4F            [ 2]  257 	clra
+                            258 	
+   029A B6 00 02      [ 5]  259 	lda	count_tablero
+   029D 4C            [ 2]  260 	inca
+   029E B7 00 02      [ 5]  261 	sta	count_tablero
+                            262 	
+   02A1 4F            [ 2]  263 	clra
+                            264 
+   02A2 B6 00 03      [ 5]  265 	lda	cinco					;Al aumentar la variable cada 5 voy representando todas las columnas
+   02A5 8B 05         [ 2]  266 	adda	#5
+   02A7 B7 00 03      [ 5]  267 	sta	cinco
+                            268 
+   02AA 20 B6         [ 3]  269 	bra	empieza_tablero				;Al final de cada iteracion deberia representar esto: *_______* hasta llegar a 6 iteraciones
+   02AC                     270 mitad_tablero:
+   02AC 7F 00 01      [ 7]  271 	clr	count					;Liberamos el contenido de la variable count para asegurarnos que no queda nada para el siguient bucle
+                            272 
+                            273 
+                            274 
+   02AF                     275 retorno_tablero:
+   02AF 86 0A         [ 2]  276 	lda	#'\n
+   02B1 B7 FF 00      [ 5]  277 	sta	pantalla
+                            278 
+   02B4 F6 00 06      [ 5]  279     ldb cont
+   02B7 C1 05         [ 2]  280     cmpb #5
+   02B9 10 27 FE ED   [ 6]  281     lbeq pal_cmp
+                            282 	
+                            283 
+   02BD 7F 00 01      [ 7]  284 	clr	count
+   02C0 7F 00 02      [ 7]  285 	clr	count_tablero
+   02C3 7F 00 03      [ 7]  286 	clr	cinco	
+   02C6 37 16         [ 8]  287 	pulu	x,a,b
+   02C8 39            [ 5]  288 	rts
+                            289 
+                            290 
+                            291 
+                            292 
+                            293 
+ASxxxx Assembler V05.00  (Motorola 6809), page 7.
+Hexidecimal [16-Bits]
+
+
+
+                            294 
+                            295 
+ASxxxx Assembler V05.00  (Motorola 6809), page 8.
+Hexidecimal [16-Bits]
+
+Symbol Table
+
+    .__.$$$.       =   2710 L   |     .__.ABS.       =   0000 G
+    .__.CPU.       =   0000 L   |     .__.H$L.       =   0001 L
+  0 bucle_contador     0138 GR  |   0 bucle_insertar     020D GR
+  0 bucle_pide         0168 GR  |   0 bucle_seguir       027D GR
+  0 bucle_turno        0225 GR  |   0 cargar             014E GR
+  0 cargar_palabra     014D GR  |   0 cinco              0003 GR
+    comprobar_pala     **** GX  |     confirmacion       **** GX
+  0 cont               0006 GR  |   0 contador_palab     0145 GR
+  0 contar_palabra     0138 GR  |   0 count              0001 GR
+  0 count_tablero      0002 GR  |   0 elegir_palabra     0124 GR
+  0 empieza_tabler     0262 GR  |   0 fin_bucle          0205 GR
+  0 final_bucle        0160 GR  |     final_juego        **** GX
+  0 has_perdido        0192 GR  |   0 ic_sgte_contad     013D GR
+    imprime_cadena     **** GX  |     imprime_cadena     **** GX
+    imprime_decima     **** GX  |   0 intentos           0009 GR
+  0 interfaz_table     0252 GR  |   0 juego_final        024F GR
+  0 juego_ppal         0162 GR  |   0 juego_principa     0113 GR
+  0 letra              0007 GR  |   0 letra_volver       000A GR
+  0 limpiar_cont       01B1 GR  |   0 mensaje_perdid     00E3 GR
+  0 mensaje_salir      007A GR  |   0 mitad_tablero      02AC GR
+  0 numero_palabra     00BF GR  |   0 numpal             0004 GR
+  0 pal_cmp            01AA GR  |   0 palabra_a_comp     010D GR
+    palabra_aleato     **** GX  |     palabras           **** GX
+    pantalla       =   FF00 G   |   0 pide               000B GR
+  0 pide_letra         016A GR  |   0 pos_b              0005 GR
+  0 pos_inicial        0000 GR  |     programapp         **** GX
+  0 quitar_letra       01C5 GR  |   0 retorno_tabler     02AF GR
+  0 seguir_bucle       028A GR  |     teclado        =   FF02 G
+  0 titulo_juego       0047 GR  |     vector_tablero     **** GX
+
+ASxxxx Assembler V05.00  (Motorola 6809), page 9.
+Hexidecimal [16-Bits]
+
+Area Table
+
+[_CSEG]
+   0 _CODE            size  2C9   flags C180
+[_DSEG]
+   1 _DATA            size    0   flags C0C0
+
